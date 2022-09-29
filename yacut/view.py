@@ -2,7 +2,7 @@
 import string
 import random
 
-from flask import flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template
 
 from . import app, db
 from .forms import URLForm
@@ -24,10 +24,10 @@ def get_unique_short_id():
         original = form.original_link.data
         short = form.custom_id.data
         if URL_map.query.filter_by(original=original).first():
-            flash('Для этой ссылки уже есть корткая ссылка')
+            flash('Для этой ссылки уже есть короткая ссылка')
             return render_template('main.html', form=form)
         if URL_map.query.filter_by(short=short).first():
-            flash('Этот вариант коротнкой ссылки уже занят')
+            flash('Этот вариант короткой ссылки уже занят')
             return render_template('main.html', form=form)
         if not short:
             short = random_link()
@@ -37,8 +37,15 @@ def get_unique_short_id():
         )
         db.session.add(url)
         db.session.commit()
-        return redirect(url_for('main.html', id=url.id))
+        context = {'form': form, 'short': short}
+        flash('Ваша новая ссылка готова:')
+        return render_template('main.html', **context)
     return render_template('main.html', form=form)
 
-
-# redirect_url
+@app.route('/<string:short>')
+def redirect_url(short):
+    url = URL_map.query.filter_by(short=short).first()
+    if url is not None:
+        return redirect(url.original)
+    abort(404)
+    

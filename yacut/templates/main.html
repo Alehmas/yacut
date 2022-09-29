@@ -42,14 +42,21 @@
                 <div class="col-sm">
                 </div>
                 <div class="col-sm">
-                    <p class="py-3 mb-3">
-                        {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                    {{ message }}
-                                {% endfor %}
+                    <p class="text-center">
+                        <h5 class="text-center">
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {{ message }}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        </h5>
+                        <h5 class="text-center">
+                            {% if short %}
+                                <a href="{{ url_for('redirect_url', short=short, _external=True) }}">{{ url_for('redirect_url', short=short, _external=True) }}</a>
                             {% endif %}
-                        {% endwith %}
+                        </h5>
                     </p>
                 </div>
                 <div class="col-sm">
