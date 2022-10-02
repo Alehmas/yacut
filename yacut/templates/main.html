@@ -44,7 +44,7 @@
                 <div class="col-sm">
                     <p class="text-center">
                         <h5 class="text-center">
-                            {% with messages = get_flashed_messages() %}
+                            {% with messages = get_flashed_messages(category_filter=["flash-text"]) %}
                                 {% if messages %}
                                     {% for message in messages %}
                                         {{ message }}
@@ -53,9 +53,13 @@
                             {% endwith %}
                         </h5>
                         <h5 class="text-center">
-                            {% if short %}
-                                <a href="{{ url_for('redirect_url', short=short, _external=True) }}">{{ url_for('redirect_url', short=short, _external=True) }}</a>
-                            {% endif %}
+                            {% with messages = get_flashed_messages(category_filter=["flash-link"]) %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <a href="{{ url_for('redirect_url', short=message, _external=True) }}">{{ url_for('redirect_url', short=message, _external=True) }}</a>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
                         </h5>
                     </p>
                 </div>
