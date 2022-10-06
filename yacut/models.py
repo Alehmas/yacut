@@ -16,3 +16,11 @@ class URL_map(db.Model):
             url=self.original,
             short_link=request.url_root + self.short
         )
+
+    def add_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def search_short(short):
+        return URL_map.query.filter_by(short=short).first()

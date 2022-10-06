@@ -1,44 +1,49 @@
+from http import HTTPStatus
+
 from flask import jsonify, request
 
-from . import app, db
+from settings import MAX_LEN_URL
+from . import app
 from .error_handlers import InvalidAPIUsage
 from .models import URL_map
-from .views import letters_and_digits, random_link
+from .utils import letters_and_digits, random_link
 
 
 @app.route('/api/id/', methods=['POST'])
 def create_id():
     data = request.get_json()
-    url_item = URL_map()
     if not data:
-        raise InvalidAPIUsage('Отсутствует тело запроса', 400)
+        raise InvalidAPIUsage(
+            'Отсутствует тело запроса', HTTPStatus.BAD_REQUEST)
     if 'url' not in data:
-        raise InvalidAPIUsage('\"url\" является обязательным полем!', 400)
+        raise InvalidAPIUsage(
+            '\"url\" является обязательным полем!', HTTPStatus.BAD_REQUEST)
     if 'custom_id' in data:
         short = data['custom_id']
         if short == '' or short is None:
             short = random_link()
-        if len(short) > 16:
+        if len(short) > MAX_LEN_URL:
             raise InvalidAPIUsage(
-                'Указано недопустимое имя для короткой ссылки', 400)
-        if URL_map.query.filter_by(short=short).first() is not None:
-            raise InvalidAPIUsage(f'Имя \"{short}\" уже занято.', 400)
+                'Указано недопустимое имя для короткой ссылки',
+                HTTPStatus.BAD_REQUEST)
+        if URL_map.search_short(short) is not None:
+            raise InvalidAPIUsage(
+                f'Имя \"{short}\" уже занято.', HTTPStatus.BAD_REQUEST)
         for i in short:
             if i not in letters_and_digits:
                 raise InvalidAPIUsage(
-                    'Указано недопустимое имя для короткой ссылки', 400)
+                    'Указано недопустимое имя для короткой ссылки',
+                    HTTPStatus.BAD_REQUEST)
     if 'custom_id' not in data:
         short = random_link()
-    url_item.original = data['url']
-    url_item.short = short
-    db.session.add(url_item)
-    db.session.commit()
-    return jsonify(url_item.to_dict()), 201
+    url_item = URL_map(original=data['url'], short=short)
+    url_item.add_db()
+    return jsonify(url_item.to_dict()), HTTPStatus.CREATED
 
 
 @app.route('/api/id/<string:short_id>/', methods=['GET'])
 def get_url(short_id):
-    url_link = URL_map.query.filter_by(short=short_id).first()
+    url_link = URL_map.search_short(short_id)
     if url_link is None:
-        raise InvalidAPIUsage('Указанный id не найден', 404)
-    return jsonify({'url': url_link.to_dict()['url']}), 200
+        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+    return jsonify({'url': url_link.to_dict()['url']}), HTTPStatus.OK

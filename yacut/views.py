@@ -1,20 +1,11 @@
-import random
-import string
+from http import HTTPStatus
 
 from flask import abort, flash, redirect, render_template
 
-from . import app, db
+from . import app
 from .forms import URLForm
 from .models import URL_map
-
-letters_and_digits = string.ascii_letters + string.digits
-
-
-def random_link():
-    short = ''.join(random.choice(letters_and_digits) for i in range(6))
-    if URL_map.query.filter_by(short=short).first():
-        random_link()
-    return short
+from .utils import random_link
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -23,7 +14,7 @@ def get_unique_short_id():
     if form.validate_on_submit():
         original = form.original_link.data
         short = form.custom_id.data
-        if URL_map.query.filter_by(short=short).first() is not None:
+        if URL_map.search_short(short) is not None:
             flash(f'Имя {short} уже занято!', 'flash-text')
             return render_template('main.html', form=form)
         if not short:
@@ -32,8 +23,7 @@ def get_unique_short_id():
             original=original,
             short=short
         )
-        db.session.add(url)
-        db.session.commit()
+        url.add_db()
         context = {'form': form, 'short': short}
         flash('Ваша новая ссылка готова:', 'flash-text')
         flash(short, 'flash-link')
@@ -43,7 +33,7 @@ def get_unique_short_id():
 
 @app.route('/<string:short>')
 def redirect_url(short):
-    url = URL_map.query.filter_by(short=short).first()
+    url = URL_map.search_short(short)
     if url is None:
-        abort(404)
+        abort(HTTPStatus.NOT_FOUND)
     return redirect(url.original)
