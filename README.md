@@ -23,7 +23,7 @@ git@github.com:Oleg-2006/yacut.git
 2. Активируйте venv и установите зависимости
 ```bash
 python -m venv venv
-source venv/bin/activate
+source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 3. Создайте в корневой директории файл .env со следующим наполнением
@@ -71,4 +71,4 @@ flask run
     }
     ```
 
-|*Полная спецификация API доступна в репозитории - файл openapi.yml*
+*Полная спецификация API доступна в репозитории - файл openapi.yml*
