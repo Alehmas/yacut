@@ -1,3 +1,4 @@
+import re
 from http import HTTPStatus
 
 from flask import jsonify, request
@@ -6,7 +7,7 @@ from settings import MAX_LEN_URL
 from . import app
 from .error_handlers import InvalidAPIUsage
 from .models import URL_map
-from .utils import letters_and_digits, random_link
+from .utils import random_link
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -30,7 +31,7 @@ def create_id():
             raise InvalidAPIUsage(
                 f'Имя \"{short}\" уже занято.', HTTPStatus.BAD_REQUEST)
         for i in short:
-            if i not in letters_and_digits:
+            if re.fullmatch(r'[a-zA-Z0-9]+', i) is None:
                 raise InvalidAPIUsage(
                     'Указано недопустимое имя для короткой ссылки',
                     HTTPStatus.BAD_REQUEST)
