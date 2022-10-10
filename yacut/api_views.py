@@ -37,8 +37,7 @@ def create_id():
                     HTTPStatus.BAD_REQUEST)
     if 'custom_id' not in data:
         short = random_link()
-    url_item = URL_map(original=data['url'], short=short)
-    url_item.add_db()
+    url_item = URL_map.create(data['url'], short)
     return jsonify(url_item.to_dict()), HTTPStatus.CREATED
 
 

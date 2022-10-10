@@ -19,11 +19,7 @@ def get_unique_short_id():
             return render_template('main.html', form=form)
         if not short:
             short = random_link()
-        url = URL_map(
-            original=original,
-            short=short
-        )
-        url.add_db()
+        URL_map.create(original, short)
         context = {'form': form, 'short': short}
         flash('Ваша новая ссылка готова:', 'flash-text')
         flash(short, 'flash-link')
