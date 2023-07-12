@@ -16,12 +16,12 @@ try:
     from yacut.models import URL_map
 except NameError:
     raise AssertionError(
-        'Не обнаружен объект приложения. Создайте экземпляр класса Flask и назовите его app.',
+        'Application object not found. Create an instance of the Flask class and name it app.',
     )
 except ImportError as exc:
     if any(obj in exc.name for obj in ['models', 'URL_map']):
-        raise AssertionError('В файле models не найдена модель URL_map')
-    raise AssertionError('Не обнаружен объект класса SQLAlchemy. Создайте его и назовите db.')
+        raise AssertionError('Model URL_map not found in models file')
+    raise AssertionError('No SQLAlchemy class object found. Create it and name it db.')
 
 
 @pytest.fixture

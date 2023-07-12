@@ -6,12 +6,14 @@ from settings import MAX_LEN_URL, MIN_LEN_URL
 
 
 class URLForm(FlaskForm):
+    """Form for creating a short link."""
+
     original_link = URLField(
-        'Длинная ссылка',
-        validators=[DataRequired(message='Обязательное поле')]
+        'Long link',
+        validators=[DataRequired(message='Required field')]
     )
     custom_id = URLField(
-        'Ваш вариант короткой ссылки',
+        'Your short link',
         validators=[Length(MIN_LEN_URL, MAX_LEN_URL), Optional()]
     )
-    submit = SubmitField('Создать')
+    submit = SubmitField('Create')
