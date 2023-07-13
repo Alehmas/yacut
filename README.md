@@ -27,9 +27,9 @@ pip install -r requirements.txt
 3. Create an .env file in the root directory with the following content
 ```bash
 FLASK_APP=yacut
-FLASK_ENV=development или production
+FLASK_ENV=development or production
 DATABASE_URI=sqlite:///db.sqlite3
-SECRET_KEY=<ваш_секретный_ключ>
+SECRET_KEY=<your_secret_key>
 ```
 
 4. Launch the Flask interactive shell and create the database.
@@ -57,7 +57,7 @@ flask run
     ```
     {
         "url": "string",
-        "custom_id": "string"  ## необязательное поле
+        "custom_id": "string"  ## optional field
     }
     ```
     - POST response scheme
