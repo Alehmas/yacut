@@ -1,32 +1,30 @@
 # Yacut
 
-## Описание
+##  Description
+Yacut is a link shortening service that associates a long user link with a short one. A short link can be offered by the user himself, or the service will generate it on its own.
 
-Yacut - это сервис укорачивания ссылок, который ассоциирует длинную пользовательскую ссылку с короткой. Короткую ссылку может предложить сам пользователь, или же сервис самостоятельно её сгенерирует.
+In other words, with the help of this service, the user can turn a long and inconvenient link like "https://flask.palletsprojects.com/en/2.2.x/changes/#version-2-0-0" into a short one - "http:/ /localhost/ver2". After creating a short link, when you click on it, you are redirected to the original address.
 
-Иными словами, при помощи данного сервиса пользователь может превратить длинную и неудобную ссылку наподобие "https://flask.palletsprojects.com/en/2.2.x/changes/#version-2-0-0" в короткую - "http://localhost/ver2". После создания короткой ссылки при переходе по ней происходит переадресация на исходный адрес.
+In addition to working in a browser with a graphical interface, an API is available to everyone, duplicating the entire functionality of the service.
 
-Помимо работы в браузере с графическим интерфейсом всем желающим доступен API, дублирующий весь функционал сервиса.
+##  Technologies used
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-6d8a7f?style=for-the-badge) ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
 
-## Ключевые технологии и библиотеки:
+## Installation
 
-- Python
-- Flask
-- SQLAlchemy
-
-## Установка:
-
-1. Склонируйте репозиторий
+1. Clone the repository
 ```bash
-git@github.com:Oleg-2006/yacut.git
+git clone git@github.com:Alehmas/yacut.git
 ```
-2. Активируйте venv и установите зависимости
+
+2. Activate venv and install dependencies
 ```bash
 python -m venv venv
 source venv/Scripts/activate
 pip install -r requirements.txt
 ```
-3. Создайте в корневой директории файл .env со следующим наполнением
+
+3. Create an .env file in the root directory with the following content
 ```bash
 FLASK_APP=yacut
 FLASK_ENV=development или production
@@ -34,41 +32,53 @@ DATABASE_URI=sqlite:///db.sqlite3
 SECRET_KEY=<ваш_секретный_ключ>
 ```
 
-## Управление:
+4. Launch the Flask interactive shell and create the database.
+```bash
+flask shell
+>>> from yacut import db       
+>>> db.create_all()
+>>> exit()
+```
 
-Для локального запуска выполните команду
+## Control
+To run locally, run the command
 ```bash
 flask run
 ```
-Сервис будет запущен и доступен по следующим адресам:
 
-- [http://localhost/](http://localhost/) - главная страница сервиса.
-    - Если не заполнить поле для короткой ссылки, она будет сгенерирована автоматически.
-    - Короткая ссылка должна быть не длиннее 16 символов (цифры и латинские буквы в любом регистре).
+### The service will be launched and available at the following addresses:
 
-- [http://localhost/api/id/](http://localhost/api/id/) - эндпоинт, принимающий POST-запросы.
-    - Схема POST-запроса
+- [http://localhost/](http://localhost/) - main page of the service.
+    - If you do not fill in the field for a short link, it will be generated automatically.
+    - A short link should be no longer than 16 characters (numbers and Latin letters in any case).
+
+- [http://localhost/api/id/](http://localhost/api/id/) - endpoint that accepts POST requests.
+    - POST request scheme
     ```
     {
-    "url": "string",
-    "custom_id": "string"  ## необязательное поле
+        "url": "string",
+        "custom_id": "string"  ## необязательное поле
     }
     ```
-    - Схема ответа на POST-запрос
+    - POST response scheme
     ```
     {
-    "url": "string",
-    "short_link": "string"
-    }
-    ```
-
-- [http://localhost/api/id/short_id/](http://localhost/api/id/short_id/) - эндпоинт, принимающий GET-запросы.
-    В адресе вместо <short_id> должна быть указана введённая или сгенерированная короткая ссылка.
-    - Схема ответа на GET-запрос
-    ```
-    {
-    "url": "string"
+        "url": "string",
+        "short_link": "string"
     }
     ```
 
-*Полная спецификация API доступна в репозитории - файл openapi.yml*
+- [http://localhost/api/id/short_id/](http://localhost/api/id/short_id/) - endpoint that accepts GET requests.
+    In the address, instead of <short_id>, the entered or generated short link must be indicated.
+    - GET response scheme
+    ```
+    {
+        "url": "string"
+    }
+    ```
+
+## Specification
+Full API specification is available in the repository - file openapi.yml
+
+## Authors
+- [Aleh Maslau](https://github.com/Alehmas)
